@@ -17,7 +17,7 @@ class Calculator {
             if (isDelimiter(input[i]))
                 continue
 
-            if (input.charAt(i).isDigit()) { //Если цифра
+            if (input.charAt(i).isDigit()) { 
 
                 while (!isDelimiter(input[i]) && !isOperator(input[i])) {
                     output.append(input[i])
