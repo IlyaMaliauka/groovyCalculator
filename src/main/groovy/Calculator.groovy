@@ -1,23 +1,23 @@
 class Calculator {
 
-    public static final String[] allowedCharacters = "123456789()+-*/"
+    private static final String[] allowedCharacters = "123456789()+-*/"
 
-    static double calculate(String input) {
+    static def calculate(String input) {
         checkCalculatorExpression.call(input)
         String output = getRpnExpression.call(input)
         return countResult.call(output)
     }
 
     static def getRpnExpression = { String input ->
-        StringBuilder output = new StringBuilder()
-        Stack<Character> operators = new Stack<>()
+        def output = new StringBuilder()
+        def operators = new Stack<>()
 
         for (int i = 0; i < input.length(); i++) {
 
             if (isDelimiter(input[i]))
                 continue
 
-            if (input.charAt(i).isDigit()) { //Если цифра
+            if (input.charAt(i).isDigit()) {
 
                 while (!isDelimiter(input[i]) && !isOperator(input[i])) {
                     output.append(input[i])
@@ -35,7 +35,7 @@ class Calculator {
                     operators.push(input[i])
                 else if (input[i].toString() == ')') {
 
-                    char s = operators.pop()
+                    def s = operators.pop()
 
                     while (s.toString() != '(') {
                         output.append(s.toString()).append(' ')
@@ -59,9 +59,9 @@ class Calculator {
         return output
     }
 
-    static Closure<Double> countResult = { String input ->
-        double result = 0
-        Stack<Double> resultStack = new Stack<>()
+    static def countResult = { String input ->
+        def result
+        def resultStack = new Stack<>()
 
         for (int i = 0; i < input.length(); i++) {
 
@@ -77,8 +77,8 @@ class Calculator {
                 i--
             } else if (isOperator(input[i])) {
 
-                double a = resultStack.pop()
-                double b = resultStack.pop()
+                def a = resultStack.pop()
+                def b = resultStack.pop()
 
                 switch (input[i]) {
                     case '+': result = b + a; break
@@ -92,15 +92,15 @@ class Calculator {
         return resultStack.peek()
     }
 
-    static private boolean isDelimiter(String c) {
+    static private def isDelimiter(String c) {
         return " =".indexOf(c) != -1
     }
 
-    static private boolean isOperator(String a) {
+    static private def isOperator(def a) {
         return "+-/*^()".indexOf(a) != -1
     }
 
-    static private int getPriority(String s) {
+    static private def getPriority(def s) {
         switch (s) {
             case '(': return 0
             case ')': return 1
@@ -117,6 +117,9 @@ class Calculator {
             if (!(input[i] in allowedCharacters)) {
                 String invalidCharacter = input[i]
                 throw new IllegalArgumentException("Invalid calculator sybmol: \"$invalidCharacter\". Allowed symbols are: $allowedCharacters")
+            }
+            if(isOperator(input[i]) && input[i] == input[i-1]) {
+                throw new IllegalArgumentException("Invalid mathematical expression: $input.")
             }
         }
     }
